@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web App with Buttons and Images</title>
+    <!-- Подключение шрифта Montserrat Black из Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: url('https://i.ibb.co/B4PYxH0/4343111.png') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .button-container {
+            display: flex;
+            gap: 25px;
+            position: absolute;
+            bottom: 27%; /* Увеличиваем отступ снизу */
+            z-index: 2;
+        }
+        .game-button {
+            display: block;
+            width: 60%;
+            max-width: 150px;
+            padding: 15px;
+            background-color: #c03030c7;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            box-shadow: 0px 2px 1px #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .game-button:hover {
+            background-color: #c03030c7;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        .image-wrapper {
+            position: relative;
+        }
+        .image-container img {
+            width: 150px;
+            height: auto;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+        .image-wrapper img.spin {
+            animation: spin 1s forwards;
+        }
+        .image-wrapper img.slide-up {
+            animation: slideUp 1s forwards;
+        }
+        .image-wrapper img.slide-down {
+            animation: slideDown 1s forwards;
+        }
+        .replacement {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px; /* Уменьшенный размер изображения */
+            height: auto;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: -1; /* Задвигаем изображение на задний план */
+        }
+        .input-container {
+            position: fixed; /* Используем fixed для постоянного положения */
+            bottom: 16%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Отступ между полем ввода и кнопкой */
+            z-index: 2;
+        }
+        .input-container input {
+            padding: 10px;
+            width: 200px;
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            background-color: rgba(255, 255, 255, 0.8); /* Добавляем полупрозрачный фон */
+        }
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #c03030c7;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .input-container button:hover {
+            background-color: #c03030c7;
+        }
+        /* Стиль для модального окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border: 2px solid #ff0000c7; /* Обводка цвета #c03030c7 */
+            border-radius: 12px; /* Увеличенный радиус скругления */
+            padding: 30px; /* Увеличенные отступы */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Увеличенная тень */
+            z-index: 3;
+            font-family: 'Montserrat', sans-serif; /* Применение шрифта Montserrat */
+        }
+        .modal p {
+            font-size: 32px; /* Увеличенный размер шрифта */
+            font-weight: bold;
+            color: #ff0000;
+            text-align: center;
+            margin: 0;
+        }
+        .modal button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 15px 30px; /* Увеличенные отступы */
+            background-color: #ff0000c7;
+            color: #fff;
+            border: none;
+            border-radius: 12px; /* Увеличенный радиус скругления */
+            cursor: pointer;
+            font-size: 12px; /* Увеличенный размер шрифта */
+            transition: background-color 0.3s;
+            font-family: 'Montserrat', sans-serif; /* Применение шрифта Montserrat */
+        }
+        .modal button:hover {
+            background-color: #a02c2c;
+        }
+        @keyframes spin {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(180deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        @keyframes slideUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50px); }
+        }
+        @keyframes slideDown {
+            0% { transform: translateY(-50px); }
+            100% { transform: translateY(0); }
+        }
+        @media (max-width: 640px) {
+            .game-button {
+                max-width: 45%;
+                font-size: 14px;
+            }
+            .image-container img {
+                width: 100px;
+            }
+            .input-container input {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <a href="https://1wanzf.life/casino/play/1play_1play_brawlpirates" class="game-button" id="action-button-1">ИГРА ЗДЕСЬ</a>
+        <a href="#" class="game-button" id="action-button-2">ПОЛУЧИТЬ СИГНАЛ</a>
+    </div>
+    <div class="image-container">
+        <div class="image-wrapper">
+            <img src="https://i.ibb.co/gjN1RPd/444.png" alt="Image 1">
+            <img src="https://i.ibb.co/PwWLf3Z/zzzzz.png" class="replacement" alt="Replacement Image 1">
+        </div>
+        <div class="image-wrapper">
+            <img src="https://i.ibb.co/gjN1RPd/444.png" alt="Image 2">
+            <img src="https://i.ibb.co/PwWLf3Z/zzzzz.png" class="replacement" alt="Replacement Image 2">
+        </div>
+        <div class="image-wrapper">
+            <img src="https://i.ibb.co/gjN1RPd/444.png" alt="Image 3">
+            <img src="https://i.ibb.co/PwWLf3Z/zzzzz.png" class="replacement" alt="Replacement Image 3">
+        </div>
+    </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Hash id...">
+        <button id="submit-button">OK</button>
+    </div>
+    <!-- Модальное окно -->
+    <div class="modal" id="hack-modal">
+        <p>HACKED</p>
+        <button id="close-modal">Close</button>
+    </div>
+    <script>
+        let isAnimating = false;
+
+        document.getElementById('action-button-1').addEventListener('click', function(event) {
+            window.location.href = 'https://1wanzf.life/casino/play/1play_1play_brawlpirates';
+        });
+
+        document.getElementById('action-button-2').addEventListener('click', function(event) {
+            event.preventDefault();
+            if (isAnimating) return;
+
+            isAnimating = true;
+            const wrappers = document.querySelectorAll('.image-wrapper');
+            const randomIndex = Math.floor(Math.random() * wrappers.length);
+
+            wrappers.forEach((wrapper, index) => {
+                const img = wrapper.querySelector('img');
+                img.classList.add('spin');
+                img.classList.remove('slide-up', 'slide-down');
+                img.style.transform = 'translateY(0)';
+                wrapper.querySelector('.replacement').style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                wrappers.forEach(wrapper => {
+                    wrapper.querySelector('img').classList.remove('spin');
+                });
+
+                const selectedWrapper = wrappers[randomIndex];
+                const selectedImg = selectedWrapper.querySelector('img');
+                const replacementImg = selectedWrapper.querySelector('.replacement');
+
+                replacementImg.style.opacity = '1';
+                selectedImg.classList.add('slide-up');
+
+                setTimeout(() => {
+                    selectedImg.classList.remove('slide-up');
+                    selectedImg.classList.add('slide-down'); // Добавляем анимацию возвращения
+
+                    setTimeout(() => {
+                        selectedImg.style.transform = 'translateY(0)'; // Сброс после подъема
+                        replacementImg.style.opacity = '0'; // Скрыть изображение замены
+                        isAnimating = false;
+                    }, 1000); // Длительность анимации возврата
+                }, 1000); // Длительность анимации подъема
+            }, 1000); // Длительность анимации вращения
+        });
+
+        document.getElementById('submit-button').addEventListener('click', function() {
+            const userInput = document.getElementById('user-input').value;
+            document.getElementById('hack-modal').style.display = 'block';
+        });
+
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('hack-modal').style.display = 'none';
+        });
+
+        // Обработчик для скрытия клавиатуры при нажатии Enter
+        document.getElementById('user-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                document.getElementById('user-input').blur(); // Скрыть клавиатуру
+            }
+        });
+    </script>
+</body>
+</html>
